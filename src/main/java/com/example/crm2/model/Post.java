@@ -1,5 +1,7 @@
 package com.example.crm2.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Post {
     private String tag;
     private String text;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
@@ -24,10 +27,6 @@ public class Post {
         this.text = text;
         this.author = user;
     }
-
-//    public String getAuthorName() {
-//        return author != null ? author.getUsername() : "<none>";
-//    }
 
     public Integer getId() {
         return id;

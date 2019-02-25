@@ -1,5 +1,7 @@
 package com.example.crm2.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +22,9 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Post> posts;
 
     public User() {
     }
@@ -66,4 +71,13 @@ public class User {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
 }
