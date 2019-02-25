@@ -27,29 +27,6 @@ public class PostController {
 
         Iterable<Post> iterable = postRepo.findAll();
 
-//        Collection collection = toList(iterable);
-//        ArrayList<Post> list = new ArrayList();
-//
-//        for (int i = 0; i < collection.size(); i++) {
-//            list.add((Post) ((List) collection).get(i));
-//        }
-//
-//        for (Post p: list) {
-//            System.out.println(p.getId());
-//            System.out.println(p.getTag());
-//            System.out.println(p.getText());
-//            if (p.getAuthor() == null) {
-//                System.out.println("<none>");
-//            } else {
-//                System.out.println(p.getAuthor().getId());
-//                System.out.println(p.getAuthor().getUsername());
-//                System.out.println(p.getAuthor().getPassword());
-//            }
-//
-//        }
-
-//        return ((List) collection).get(0);
-
         return iterable;
     }
 

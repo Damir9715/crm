@@ -1,6 +1,6 @@
 package com.example.crm2.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 
@@ -14,7 +14,7 @@ public class Post {
     private String tag;
     private String text;
 
-    @JsonBackReference
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;

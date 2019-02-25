@@ -1,6 +1,7 @@
 package com.example.crm2.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -22,9 +23,27 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @JsonManagedReference
+    @JsonBackReference
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Post> posts;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_subscriptions",
+            joinColumns = { @JoinColumn(name = "channel_id") },
+            inverseJoinColumns = { @JoinColumn(name = "subscriber_id") }
+    )
+    private Set<User> subscribers = new HashSet<>();
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "user_subscriptions",
+            joinColumns = { @JoinColumn(name = "subscriber_id") },
+            inverseJoinColumns = { @JoinColumn(name = "channel_id") }
+    )
+    private Set<User> subscriptions = new HashSet<>();
 
     public User() {
     }
@@ -80,4 +99,19 @@ public class User {
         this.posts = posts;
     }
 
+    public Set<User> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(Set<User> subscribers) {
+        this.subscribers = subscribers;
+    }
+
+    public Set<User> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Set<User> subscriptions) {
+        this.subscriptions = subscriptions;
+    }
 }
