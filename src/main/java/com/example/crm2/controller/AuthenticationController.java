@@ -11,24 +11,27 @@ import com.example.crm2.model.User;
 import com.example.crm2.repo.RoleRepo;
 import com.example.crm2.repo.UserRepo;
 import com.example.crm2.security.JwtTokenProvider;
+import com.example.crm2.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.Set;
 
 @RestController
 public class AuthenticationController {
@@ -94,33 +97,13 @@ public class AuthenticationController {
                 )
         );
 
+        Collection<? extends GrantedAuthority> auth = authentication.getAuthorities();
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, auth.toString()));
     }
 
-    @GetMapping("/open")
-    public String open() {
-        return "open resource";
-    }
-
-    @GetMapping("/closeAd")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String closeAd() {
-        return "endPoint only for Admin";
-    }
-
-    @GetMapping("/closeTe")
-    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER')")
-    public String closeTe() {
-        return "endPoint only for Teacher";
-    }
-
-    @GetMapping("/closeSt")
-    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER', 'STUDENT')")
-    public String closeSt() {
-        return "endPoint only for Student";
-    }
 }
