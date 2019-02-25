@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-public class CrudUser {
+public class AdminPanelController {
 
     @Autowired
     UserRepo userRepo;
