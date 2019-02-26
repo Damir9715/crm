@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails { //principal Skinner
 
     private Integer id;
     private String username;

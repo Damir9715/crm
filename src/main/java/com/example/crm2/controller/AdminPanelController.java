@@ -32,7 +32,7 @@ public class AdminPanelController {
 
     @GetMapping("/user")
     @PreAuthorize("hasAuthority('ADMIN')")
-    Iterable<User> read() {
+    public Iterable<User> read() {
         return userRepo.findAll();
     }
 

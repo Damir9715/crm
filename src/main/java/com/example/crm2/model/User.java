@@ -13,6 +13,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)  //auto: id doesn't have default value
     private Integer id;
     private String username;
+
+    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -76,4 +76,19 @@ public class SubscriptionController {
 
         return ResponseEntity.ok(new ApiResponse(true, "Subscribers " + a + " Subscriptions " + b));
     }
+
+    @GetMapping("sub/{type}/{user}/list")
+    public Iterable<User> subList(
+            @PathVariable User user,
+            @PathVariable String type
+    ) {
+        System.out.println(user);
+        System.out.println(type);
+
+        if ("subscriptions".equals(type)) {
+            return user.getSubscriptions();
+        } else if ("subscribers".equals(type)){
+            return user.getSubscribers();
+        } else return null;
+    }
 }
