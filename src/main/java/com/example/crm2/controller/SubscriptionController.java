@@ -1,6 +1,7 @@
 package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
+import com.example.crm2.model.Post;
 import com.example.crm2.model.User;
 import com.example.crm2.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,6 +86,15 @@ public class SubscriptionController {
             return user.getSubscriptions();
         } else if ("subscribers".equals(type)){
             return user.getSubscribers();
+        } else return null;
+    }
+
+    @GetMapping("sub/{user}/post")
+    public Iterable<Post> subPost(
+            @PathVariable User user
+    ) {
+        if (userRepo.existsByUsername(user.getUsername())) {
+            return user.getPosts();
         } else return null;
     }
 }

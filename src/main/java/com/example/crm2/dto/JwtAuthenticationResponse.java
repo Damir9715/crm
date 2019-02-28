@@ -4,12 +4,12 @@ public class JwtAuthenticationResponse {
 
     private String accessToken;
     private String tokenType = "Bearer";
-    private String word;
+    private String role;
     private String username;
 
-    public JwtAuthenticationResponse(String accessToken, String word, String username) {
+    public JwtAuthenticationResponse(String accessToken, String role, String username) {
         this.accessToken = accessToken;
-        this.word = word;
+        this.role = role;
         this.username = username;
     }
 
@@ -29,12 +29,12 @@ public class JwtAuthenticationResponse {
         this.tokenType = tokenType;
     }
 
-    public String getWord() {
-        return word;
+    public String getRole() {
+        return role;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getUsername() {

@@ -15,7 +15,6 @@ public class Post {
     private String tag;
     private String text;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
