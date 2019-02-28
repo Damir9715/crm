@@ -5,6 +5,7 @@ import com.example.crm2.dto.JwtAuthenticationResponse;
 import com.example.crm2.dto.LoginRequest;
 import com.example.crm2.dto.RegistrationRequest;
 import com.example.crm2.exception.AppException;
+import com.example.crm2.model.Post;
 import com.example.crm2.model.Role;
 import com.example.crm2.model.RoleName;
 import com.example.crm2.model.User;
@@ -20,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +48,12 @@ public class AuthenticationController {
 
     @Autowired
     JwtTokenProvider tokenProvider;
+
+    @GetMapping("/hello")
+    public String getPosts() {
+
+        return "Hello world epta";
+    }
 
     @PostMapping("/registration")
     public ResponseEntity<?> registration(@RequestBody RegistrationRequest request) {
@@ -99,7 +107,7 @@ public class AuthenticationController {
 
         String jwt = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, auth.toString()));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, auth.toString(), loginRequest.getUsername()));
     }
 
 }

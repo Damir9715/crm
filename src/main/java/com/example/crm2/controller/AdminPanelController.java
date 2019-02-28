@@ -81,20 +81,9 @@ public class AdminPanelController {
 
     @DeleteMapping("/user/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER', 'STUDENT')")
     public ResponseEntity delete(@PathVariable("id") User user) {
         userRepo.delete(user);
         return ResponseEntity.ok(new ApiResponse(true, "User deleted suc"));
-    }
-
-    @GetMapping("/closeAd")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String closeAd() {
-        return "endPoint only for Admin";
-    }
-
-    @GetMapping("/closeSt")
-    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER', 'STUDENT')")
-    public String closeSt() {
-        return "endPoint only for Student";
     }
 }

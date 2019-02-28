@@ -22,7 +22,7 @@ public class PostController {
     @Autowired
     private PostRepo postRepo;
 
-    @GetMapping("/getPosts")
+    @GetMapping("/post")
     public Iterable<Post> getPosts() {
 
         Iterable<Post> iterable = postRepo.findAll();
@@ -30,7 +30,7 @@ public class PostController {
         return iterable;
     }
 
-    @PostMapping("/createPost")
+    @PostMapping("/post")
     public ResponseEntity create(@RequestBody Post post, Principal principal) {
         String name = principal.getName();
 
@@ -53,7 +53,6 @@ public class PostController {
 
         return posts;
     }
-
 
     //delete, update, find by username
 }

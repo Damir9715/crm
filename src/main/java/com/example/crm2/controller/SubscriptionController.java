@@ -37,7 +37,6 @@ public class SubscriptionController {
             Principal principal,
             @PathVariable User user
     ) {
-
         String name = principal.getName();
 
         User currentUser = userRepo.findByUsername(name).orElseThrow(() ->
@@ -82,9 +81,6 @@ public class SubscriptionController {
             @PathVariable User user,
             @PathVariable String type
     ) {
-        System.out.println(user);
-        System.out.println(type);
-
         if ("subscriptions".equals(type)) {
             return user.getSubscriptions();
         } else if ("subscribers".equals(type)){
