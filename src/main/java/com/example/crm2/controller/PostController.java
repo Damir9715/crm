@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.Set;
 
 @RestController
+@RequestMapping("/post")
 public class PostController {
 
     @Autowired
@@ -22,7 +23,7 @@ public class PostController {
     @Autowired
     private PostRepo postRepo;
 
-    @GetMapping("/post")
+    @GetMapping
     public Iterable<Post> getPosts() {
 
         Iterable<Post> iterable = postRepo.findAll();
@@ -30,7 +31,7 @@ public class PostController {
         return iterable;
     }
 
-    @PostMapping("/post")
+    @PostMapping
     public ResponseEntity create(@RequestBody Post post, Principal principal) {
         String name = principal.getName();
 
@@ -44,7 +45,7 @@ public class PostController {
         return ResponseEntity.ok(new ApiResponse(true, "Post created suc"));
     }
 
-    @GetMapping("posts/{user}")
+    @GetMapping("/{user}")
     public Set<Post> userPosts(
             @PathVariable User user
     ) {
@@ -54,5 +55,5 @@ public class PostController {
         return posts;
     }
 
-    //delete, update, find by username
+//    delete, update, find by username
 }

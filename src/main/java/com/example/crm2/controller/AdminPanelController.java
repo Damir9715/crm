@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/user")
 public class AdminPanelController {
 
     @Autowired
@@ -30,20 +31,20 @@ public class AdminPanelController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @GetMapping("/user")
+    @GetMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     public Iterable<User> read() {
         return userRepo.findAll();
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public Optional<User> getUser(@PathVariable Integer id) {
         Optional<User> user = userRepo.findById(id);
         return user;
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> registration(@PathVariable("id") User userFromDB, @RequestBody PutRequest request) {
 
@@ -79,7 +80,7 @@ public class AdminPanelController {
         return ResponseEntity.created(location).body(new ApiResponse(true, "User updated suc"));
     }
 
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
 //    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER', 'STUDENT')")
     public ResponseEntity delete(@PathVariable("id") User user) {

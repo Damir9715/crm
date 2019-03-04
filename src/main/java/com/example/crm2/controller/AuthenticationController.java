@@ -5,7 +5,6 @@ import com.example.crm2.dto.JwtAuthenticationResponse;
 import com.example.crm2.dto.LoginRequest;
 import com.example.crm2.dto.RegistrationRequest;
 import com.example.crm2.exception.AppException;
-import com.example.crm2.model.Post;
 import com.example.crm2.model.Role;
 import com.example.crm2.model.RoleName;
 import com.example.crm2.model.User;
@@ -15,17 +14,13 @@ import com.example.crm2.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -33,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     @Autowired
