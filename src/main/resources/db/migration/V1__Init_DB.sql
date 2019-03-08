@@ -1,64 +1,74 @@
+create sequence hibernate_sequence start 1 increment 1;
+
 create table post
 (
-  id      integer not null auto_increment,
-  tag     varchar(255),
-  text    varchar(255) not null,
-  user_id integer,
-  primary key (id)
-) engine = InnoDB;
+id      int4 not null,
+tag     varchar(255),
+text    varchar(255),
+user_id int4,
+primary key (id)
+);
 
 create table role
 (
-  id   integer not null auto_increment,
-  name varchar(255),
-  primary key (id)
-) engine = InnoDB;
-
-create table user
-(
-  id       integer not null auto_increment,
-  password varchar(255) not null,
-  username varchar(255) not null,
-  primary key (id)
-) engine = InnoDB;
+id   int4 not null,
+name varchar(255),
+primary key (id)
+);
 
 create table user_role
 (
-  user_id integer not null,
-  role_id integer not null,
-  primary key (user_id, role_id)
-) engine = InnoDB;
+user_id int4 not null,
+role_id int4 not null,
+primary key (user_id, role_id)
+);
 
 create table user_subscriptions
 (
-  subscriber_id integer not null,
-  channel_id    integer not null,
-  primary key (channel_id, subscriber_id)
-) engine = InnoDB;
+subscriber_id int4 not null,
+channel_id    int4 not null,
+primary key (channel_id, subscriber_id)
+);
 
-alter table role
-  add constraint UK_epk9im9l9q67xmwi4hbed25do unique (name);
+create table usr
+(
+id       int4 not null,
+password varchar(255),
+username varchar(255),
+primary key (id)
+);
 
-alter table post
-  add constraint FK72mt33dhhs48hf9gcqrq4fxte
-    foreign key (user_id) references user (id);
+alter table if exists role
+drop constraint if exists UK_epk9im9l9q67xmwi4hbed25do;
 
-alter table user_role
+alter table if exists role
+add constraint UK_epk9im9l9q67xmwi4hbed25do unique (name);
+
+
+alter table if exists post
+  add constraint FKrm2u0ujvvi9euawhsm1km29m4
+    foreign key (user_id) references usr;
+
+alter table if exists user_role
   add constraint FKa68196081fvovjhkek5m97n3y
-    foreign key (role_id) references role (id);
+    foreign key (role_id) references role;
 
-alter table user_role
-  add constraint FK859n2jvi8ivhui0rl0esws6o
-    foreign key (user_id) references user (id);
+alter table if exists user_role
+  add constraint FKfpm8swft53ulq2hl11yplpr5
+    foreign key (user_id) references usr;
 
-alter table user_subscriptions
-  add constraint FKs9oa7i0xgbrqmkvgnv0r19m9v
-    foreign key (channel_id) references user (id);
+alter table if exists user_subscriptions
+  add constraint FK74b7d4i0rhhj8jljvidimewie
+    foreign key (channel_id) references usr;
 
-alter table user_subscriptions
-  add constraint FKl9bhyxre3khiisorjq37vbr3f
-    foreign key (subscriber_id) references user (id);
+alter table if exists user_subscriptions
+  add constraint FKm69uaasbua17sgdnhsq10yxd5
+    foreign key (subscriber_id) references usr;
 
-insert into role(name) values('ADMIN');
-insert into role(name) values('TEACHER');
-insert into role(name) values('STUDENT');
+
+insert into role(id, name)
+values (1, 'ADMIN');
+insert into role(id, name)
+values (2, 'TEACHER');
+insert into role(id, name)
+values (3, 'STUDENT');

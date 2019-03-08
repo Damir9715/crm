@@ -7,9 +7,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "usr")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  //auto: id doesn't have default value
+    @GeneratedValue(strategy = GenerationType.AUTO)  //auto: id doesn't have default value
     private Integer id;
     private String username;
 

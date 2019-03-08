@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.Optional;
 
@@ -44,6 +45,7 @@ public class AdminPanelController {
         return user;
     }
 
+    //if given users id doesn't exists then it will create new one
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> registration(@PathVariable("id") User userFromDB, @RequestBody PutRequest request) {
@@ -84,7 +86,9 @@ public class AdminPanelController {
     @PreAuthorize("hasAuthority('ADMIN')")
 //    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER', 'STUDENT')")
     public ResponseEntity delete(@PathVariable("id") User user) {
-        userRepo.delete(user);
-        return ResponseEntity.ok(new ApiResponse(true, "User deleted suc"));
+        if (user != null){
+            userRepo.delete(user);
+            return ResponseEntity.ok(new ApiResponse(true, "User deleted suc"));
+        } else return ResponseEntity.ok(new ApiResponse(false, "This user doesn't exist"));
     }
 }
