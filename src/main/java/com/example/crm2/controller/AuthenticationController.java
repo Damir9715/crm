@@ -20,10 +20,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -47,17 +48,18 @@ public class AuthenticationController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/registration")
-    public ResponseEntity<?> registration(@RequestBody RegistrationRequest request) {
+    public ResponseEntity registration(@RequestBody RegistrationRequest request) {
+
         if (userRepo.existsByUsername(request.getUsername())) {
-            return new ResponseEntity(new ApiResponse(false, "This username already exists"),
+            return new ResponseEntity<>(new ApiResponse(false, "This username already exists"),
                     HttpStatus.BAD_REQUEST);
         }
 
         User user = new User(request.getUsername(), request.getPassword());
+        Role userRole;
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role userRole;
 
         if (request.getRole().equals("admin")) {
             userRole = roleRepo.findByName(RoleName.ADMIN)
@@ -69,21 +71,17 @@ public class AuthenticationController {
         }
         else {userRole = roleRepo.findByName(RoleName.STUDENT)
                     .orElseThrow(() -> new AppException("User Role not set"));
-        }
+        } //identifyRole
 
         user.setRoles(Collections.singleton(userRole));
 
-        User result = userRepo.save(user);
+        userRepo.save(user);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath()
-                .buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User reg suc"));
+        return ResponseEntity.ok(new ApiResponse(true, "User registered successfully"));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity authenticateUser(@RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -100,5 +98,4 @@ public class AuthenticationController {
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, auth.toString(), loginRequest.getUsername()));
     }
-
 }

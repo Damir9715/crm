@@ -10,7 +10,7 @@ import java.util.Set;
 @Table(name = "usr")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)  //auto: id doesn't have default value
+    @GeneratedValue(strategy = GenerationType.AUTO)  //auto: id doesn't have default value in mysql
     private Integer id;
     private String username;
 

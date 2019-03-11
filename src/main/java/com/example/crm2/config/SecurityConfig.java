@@ -19,12 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,      //@Secured("ADMIN")
-        jsr250Enabled = true,       //@RolesAllowed("ADMIN")
-        prePostEnabled = true       //@PreAuthorize("hasAuthority('ADMIN')")
-)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 
@@ -39,31 +36,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationFilter();
     }
 
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder);
-    }
-
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
-    private static final String[] AUTH_WHITELIST = {
-            "/",
-            "/v2/api-docs",
-            "/swagger-resources/configuration/ui",
-            "/configuration/ui",
-            "/swagger-resources",
-            "/swagger-resources/configuration/security",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/webjars/**",
-            "/auth/**"
-    };
+    @Override
+    public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+        authenticationManagerBuilder
+                .userDetailsService(customUserDetailsService)
+                .passwordEncoder(passwordEncoder);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -84,6 +68,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
     }
+
+    private static final String[] AUTH_WHITELIST = {
+            "/",
+            "/v2/api-docs",
+            "/swagger-resources/configuration/ui",
+            "/configuration/ui",
+            "/swagger-resources",
+            "/swagger-resources/configuration/security",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/auth/**"
+    };
 }

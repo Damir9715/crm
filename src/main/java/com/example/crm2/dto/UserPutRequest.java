@@ -1,6 +1,6 @@
 package com.example.crm2.dto;
 
-public class PutRequest {
+public class UserPutRequest {
 
     private String username;
     private String password;

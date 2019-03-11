@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 Integer userId = tokenProvider.getUserIdFromJWT(jwt);
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);  //load user
 
+                //authentication implementation designed for simple presentation of a username/password
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
@@ -51,7 +52,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
+
         String bearerToken = request.getHeader("Authorization");
+
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7, bearerToken.length());
         }

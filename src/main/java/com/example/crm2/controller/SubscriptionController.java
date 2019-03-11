@@ -27,8 +27,8 @@ public class SubscriptionController {
     @Autowired
     private PostRepo postRepo;
 
-//    returns true only if user not subscribed, for subscribe
-    public boolean sub(User currentUser, User user) {
+    public boolean sub(User currentUser, User user) { //returns true only if user not subscribed, for subscribe
+
         if (user != null) {
             if (user.getSubscribers().contains(currentUser)) {
                 return false;
@@ -41,8 +41,8 @@ public class SubscriptionController {
         return false;
     }
 
-//    returns true only if user subscribed, for unsubscribe
-    public boolean unsub(User currentUser, User user) {
+    public boolean unsub(User currentUser, User user) { //returns true only if user subscribed, for unsubscribe
+
         if (user != null) {
             if (!user.getSubscribers().contains(currentUser)) {
                 return false;
@@ -60,6 +60,7 @@ public class SubscriptionController {
             Principal principal,
             @PathVariable User user
     ) {
+
         String name = principal.getName();
 
         User currentUser = userRepo.findByUsername(name).orElseThrow(() ->
@@ -92,6 +93,7 @@ public class SubscriptionController {
 
     @GetMapping("/amount")
     public ResponseEntity amount(Principal principal) {
+
         String name = principal.getName();
 
         User user = userRepo.findByUsername(name).orElseThrow(() ->
@@ -103,12 +105,12 @@ public class SubscriptionController {
         return ResponseEntity.ok(new ApiResponse(true, "Subscribers " + a + " Subscriptions " + b));
     }
 
-//    returns list of subscribers or subscriptions of current User
-    @GetMapping("/{type}/{user}/list")
+    @GetMapping("/{type}/{user}/list") //returns list of subscribers/subscriptions of current User
     public Iterable<User> subList(
             @PathVariable User user,
             @PathVariable String type
     ) {
+
         if ("subscriptions".equals(type)) {
             return user.getSubscriptions();
         } else if ("subscribers".equals(type)){
@@ -116,10 +118,10 @@ public class SubscriptionController {
         } else return null;
     }
 
-//    should return posts of users for whom i was subscribed
     @ApiOperation(value = "returns list of posts from Users which I follow")
     @GetMapping("/{id}/post")
     public List<Post> subPost(@PathVariable Integer id) {
+
         return postRepo.listOfPostsOfUsersIFollow(id);
     }
 }

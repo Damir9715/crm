@@ -14,5 +14,4 @@ public interface PostRepo extends JpaRepository<Post, Integer> {
             "user_subscriptions.channel_id from usr, user_subscriptions \n" +
             "where user_subscriptions.subscriber_id = ?1))", nativeQuery = true)
     List<Post> listOfPostsOfUsersIFollow(Integer myId);
-
 }
