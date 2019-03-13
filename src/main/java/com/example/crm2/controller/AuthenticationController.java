@@ -26,7 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
@@ -55,25 +56,9 @@ public class AuthenticationController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(request.getUsername(), request.getPassword());
-        Role userRole;
+        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-
-        if (request.getRole().equals("admin")) {
-            userRole = roleRepo.findByName(RoleName.ADMIN)
-                    .orElseThrow(() -> new AppException("User Role not set"));
-        }
-        else if (request.getRole().equals("teacher")) {
-            userRole = roleRepo.findByName(RoleName.TEACHER)
-                    .orElseThrow(() -> new AppException("User Role not set"));
-        }
-        else {userRole = roleRepo.findByName(RoleName.STUDENT)
-                    .orElseThrow(() -> new AppException("User Role not set"));
-        } //identifyRole
-
-        user.setRoles(Collections.singleton(userRole));
+        user.getRoles().addAll(identifyRole(request));
 
         userRepo.save(user);
 
@@ -97,5 +82,15 @@ public class AuthenticationController {
         String jwt = tokenProvider.generateToken(authentication);
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, auth.toString(), loginRequest.getUsername()));
+    }
+
+    private Set<Role> identifyRole(RegistrationRequest request) {
+
+        Set<Role> userRole = new HashSet<>();
+
+        for (RoleName role: request.getRole()) {
+            userRole.add(roleRepo.findByName(role).orElseThrow(() -> new AppException("Fail Role")));
+        }
+        return userRole;
     }
 }

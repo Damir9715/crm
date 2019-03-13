@@ -1,7 +1,7 @@
 package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
-import com.example.crm2.dto.UserPutRequest;
+import com.example.crm2.dto.RegistrationRequest;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.Role;
 import com.example.crm2.model.RoleName;
@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
@@ -30,14 +32,12 @@ public class AdminPanelController {
     PasswordEncoder passwordEncoder;
 
     @GetMapping
-//    @PreAuthorize("hasAuthority('ADMIN')")
     public Iterable<User> read() {
 
         return userRepo.findAll();
     }
 
     @GetMapping("/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
     public Optional<User> getUser(@PathVariable Integer id) {
 
         Optional<User> user = userRepo.findById(id);
@@ -45,35 +45,17 @@ public class AdminPanelController {
     }
 
     @PutMapping("/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity update(
             @PathVariable("id") User userFromDB,
-            @RequestBody UserPutRequest request
+            @RequestBody RegistrationRequest request
     ) {
 
         if (userFromDB != null) {
             userFromDB.setUsername(request.getUsername());
             userFromDB.setPassword(passwordEncoder.encode(request.getPassword()));
 
-            Role userRole;
-
-            if (request.getRole().equals("admin")) {
-                userRole = roleRepo.findByName(RoleName.ADMIN)
-                        .orElseThrow(() -> new AppException("User Role not set"));
-            }
-            else if (request.getRole().equals("teacher")) {
-                userRole = roleRepo.findByName(RoleName.TEACHER)
-                        .orElseThrow(() -> new AppException("User Role not set"));
-            }
-            else {userRole = roleRepo.findByName(RoleName.STUDENT)
-                    .orElseThrow(() -> new AppException("User Role not set"));
-            } //identifyRole
-
             userFromDB.getRoles().clear();
-            userFromDB.getRoles().add(userRole);
-
-//        userFromDB.setRoles(Collections.singleton(userRole)); ???
-//        BeanUtils.copyProperties(user, userFromDB, "id"); ???
+            userFromDB.getRoles().addAll(identifyRole(request));
 
             userRepo.save(userFromDB);
 
@@ -85,7 +67,6 @@ public class AdminPanelController {
     }
 
     @DeleteMapping("/{id}")
-//    @PreAuthorize("hasAnyAuthority('ADMIN','TEACHER', 'STUDENT')")
     public ResponseEntity delete(@PathVariable("id") User user) {
 
         if (user != null){
@@ -93,5 +74,15 @@ public class AdminPanelController {
             return ResponseEntity.ok(new ApiResponse(true, "User deleted successfully"));
         } else return new ResponseEntity<>(new ApiResponse(false, "This user doesn't exist"),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    private Set<Role> identifyRole(RegistrationRequest request) {
+
+        Set<Role> userRole = new HashSet<>();
+
+        for (RoleName role: request.getRole()) {
+            userRole.add(roleRepo.findByName(role).orElseThrow(() -> new AppException("Fail Role")));
+        }
+        return userRole;
     }
 }

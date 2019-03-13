@@ -17,7 +17,7 @@ public class User {
     @JsonIgnore
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany/*(fetch = FetchType.LAZY)*/
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
