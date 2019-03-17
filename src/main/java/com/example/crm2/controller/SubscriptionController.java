@@ -64,7 +64,7 @@ public class SubscriptionController {
         String name = principal.getName();
 
         User currentUser = userRepo.findByUsername(name).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email : " + name));
+                new UsernameNotFoundException("User not found with username or email: " + name));
 
         if (sub(currentUser, user)) {
             return ResponseEntity.ok(new ApiResponse(true, "Successfully subscribed"));
@@ -82,7 +82,7 @@ public class SubscriptionController {
         String name = principal.getName();
 
         User currentUser = userRepo.findByUsername(name).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email : " + name));
+                new UsernameNotFoundException("User not found with username or email: " + name));
 
         if (unsub(currentUser, user)) {
             return ResponseEntity.ok(new ApiResponse(true, "Successfully unsubscribed"));
@@ -97,7 +97,7 @@ public class SubscriptionController {
         String name = principal.getName();
 
         User user = userRepo.findByUsername(name).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email : " + name));
+                new UsernameNotFoundException("User not found with username or email: " + name));
 
         int a = user.getSubscribers().size();
         int b = user.getSubscriptions().size();

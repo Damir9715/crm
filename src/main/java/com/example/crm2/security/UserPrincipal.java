@@ -15,16 +15,18 @@ public class UserPrincipal implements UserDetails { //principal Skinner
 
     private Integer id;
     private String username;
+    private boolean active;
 
     @JsonIgnore
     private String password;
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Integer id, String username, String password,
+    public UserPrincipal(Integer id, String username, boolean active, String password,
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
+        this.active = active;
         this.password = password;
         this.authorities = authorities;
     }
@@ -38,6 +40,7 @@ public class UserPrincipal implements UserDetails { //principal Skinner
         return new UserPrincipal(
                 user.getId(),
                 user.getUsername(),
+                user.isActive(),
                 user.getPassword(),
                 authorities
         );
@@ -45,6 +48,14 @@ public class UserPrincipal implements UserDetails { //principal Skinner
 
     public Integer getId() {
         return id;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override
@@ -79,7 +90,7 @@ public class UserPrincipal implements UserDetails { //principal Skinner
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isActive();
     }
 
     @Override

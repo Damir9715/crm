@@ -59,6 +59,7 @@ public class AuthenticationController {
         User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
 
         user.getRoles().addAll(identifyRole(request));
+        user.setActive(true);
 
         userRepo.save(user);
 
@@ -75,13 +76,12 @@ public class AuthenticationController {
                 )
         );
 
-        Collection<? extends GrantedAuthority> auth = authentication.getAuthorities();
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, auth.toString(), loginRequest.getUsername()));
+        return ResponseEntity.ok(new JwtAuthenticationResponse(
+                jwt, authentication.getAuthorities().toString(), loginRequest.getUsername()));
     }
 
     private Set<Role> identifyRole(RegistrationRequest request) {

@@ -1,7 +1,9 @@
 package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
+import com.example.crm2.dto.CountDescription;
 import com.example.crm2.dto.RegistrationRequest;
+import com.example.crm2.dto.UpdateRequest;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.Role;
 import com.example.crm2.model.RoleName;
@@ -14,9 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/user")
@@ -31,12 +31,6 @@ public class AdminPanelController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @GetMapping
-    public Iterable<User> read() {
-
-        return userRepo.findAll();
-    }
-
     @GetMapping("/{id}")
     public Optional<User> getUser(@PathVariable Integer id) {
 
@@ -44,16 +38,47 @@ public class AdminPanelController {
         return user;
     }
 
+    @GetMapping("/count")
+    public List<CountDescription> getUserCount() {
+
+        List<CountDescription> list = new ArrayList<>();
+
+        list.add(new CountDescription("Админы", userRepo.countOfRoles(1)));
+        list.add(new CountDescription("Преподаватели", userRepo.countOfRoles(2)));
+        list.add(new CountDescription("Активные студенты", userRepo.countOfRolesNonActive(3, true)));
+        list.add(new CountDescription("Неактивные студенты", userRepo.countOfRolesNonActive(3, false)));
+
+        return list;
+    }
+
+    @GetMapping("/admin")
+    public List<User> getAdmin() {
+
+        return userRepo.findUserWithRole(1);
+    }
+
+    @GetMapping("/teacher")
+    public List<User> getTeacher() {
+
+        return userRepo.findUserWithRole(2);
+    }
+
+    @GetMapping("/student")
+    public List<User> getStudent() {
+
+        return userRepo.findUserWithRole(3);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity update(
             @PathVariable("id") User userFromDB,
-            @RequestBody RegistrationRequest request
+            @RequestBody UpdateRequest request
     ) {
 
         if (userFromDB != null) {
             userFromDB.setUsername(request.getUsername());
             userFromDB.setPassword(passwordEncoder.encode(request.getPassword()));
-
+            userFromDB.setActive(request.isActive());
             userFromDB.getRoles().clear();
             userFromDB.getRoles().addAll(identifyRole(request));
 

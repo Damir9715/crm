@@ -17,6 +17,9 @@ public class User {
     @JsonIgnore
     private String password;
 
+    private boolean active;
+
+    @JsonIgnore
     @ManyToMany/*(fetch = FetchType.LAZY)*/
     @JoinTable(
             name = "user_role",
@@ -24,6 +27,14 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_subject",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
+    private Set<Subject> subjects = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -55,10 +66,11 @@ public class User {
         this.password = password;
     }
 
-    public User(Integer id, String username, String password) {
+    public User(Integer id, String username, String password, boolean active) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.active = active;
     }
 
     public Integer getId() {
@@ -75,6 +87,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public String getPassword() {
@@ -115,5 +135,13 @@ public class User {
 
     public void setSubscriptions(Set<User> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public Set<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void setSubjects(Set<Subject> subjects) {
+        this.subjects = subjects;
     }
 }

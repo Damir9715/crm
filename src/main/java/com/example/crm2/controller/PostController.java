@@ -7,13 +7,16 @@ import com.example.crm2.model.User;
 import com.example.crm2.repo.PostRepo;
 import com.example.crm2.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/post")
@@ -26,11 +29,25 @@ public class PostController {
     private PostRepo postRepo;
 
     @GetMapping
-    public Iterable<Post> getPosts() {
+    public Iterable<Post> getPosts(
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+    ) {
 
-        Iterable<Post> iterable = postRepo.findAll();
+        Page<Post> page = postRepo.findAll(pageable);
 
-        return iterable;
+        return page;
+    }
+
+    @GetMapping("/{id}")
+    public Page<Post> userPosts(
+            @PathVariable Integer id,
+            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+
+        Page<Post> posts = postRepo.findAllByAuthor_Id(id, pageable).orElseThrow(() ->
+                new IllegalArgumentException("Posts with author id not found: " + id));
+
+        return posts;
     }
 
     @PostMapping
@@ -39,21 +56,13 @@ public class PostController {
         String name = principal.getName();
 
         User user = userRepo.findByUsername(name).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email : " + name));
+                new UsernameNotFoundException("User not found with username or email: " + name));
 
         post.setAuthor(user);
 
         postRepo.save(post);
 
         return ResponseEntity.ok(new ApiResponse(true, "Post created successfully"));
-    }
-
-    @GetMapping("/{user}")
-    public Set<Post> userPosts(@PathVariable User user) {
-
-        Set<Post> posts = user.getPosts();
-
-        return posts;
     }
 
     @PutMapping("/{id}")

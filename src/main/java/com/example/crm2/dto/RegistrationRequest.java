@@ -8,7 +8,16 @@ public class RegistrationRequest {
 
     private String username;
     private String password;
+    private String subject;
     private Set<RoleName> role;
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
 
     public String getUsername() {
         return username;
