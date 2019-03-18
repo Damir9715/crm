@@ -7,8 +7,10 @@ import com.example.crm2.dto.RegistrationRequest;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.Role;
 import com.example.crm2.model.RoleName;
+import com.example.crm2.model.Subject;
 import com.example.crm2.model.User;
 import com.example.crm2.repo.RoleRepo;
+import com.example.crm2.repo.SubjectRepo;
 import com.example.crm2.repo.UserRepo;
 import com.example.crm2.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +38,9 @@ public class AuthenticationController {
 
     @Autowired
     RoleRepo roleRepo;
+
+    @Autowired
+    SubjectRepo subjectRepo;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -60,6 +63,7 @@ public class AuthenticationController {
 
         user.getRoles().addAll(identifyRole(request));
         user.setActive(true);
+        user.getSubjects().addAll(identifySubject(request));
 
         userRepo.save(user);
 
@@ -92,5 +96,15 @@ public class AuthenticationController {
             userRole.add(roleRepo.findByName(role).orElseThrow(() -> new AppException("Fail Role")));
         }
         return userRole;
+    }
+
+    private Set<Subject> identifySubject(RegistrationRequest request) {
+
+        Set<Subject> subjects = new HashSet<>();
+
+        for (String s: request.getSubject()) {
+            subjects.add(subjectRepo.findByName(s).orElseThrow(() -> new AppException("Fail Subject")));
+        }
+        return subjects;
     }
 }

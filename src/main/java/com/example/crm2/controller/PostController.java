@@ -2,10 +2,12 @@ package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
 import com.example.crm2.dto.PostPutRequest;
+import com.example.crm2.exception.AppException;
 import com.example.crm2.model.Post;
 import com.example.crm2.model.User;
 import com.example.crm2.repo.PostRepo;
 import com.example.crm2.repo.UserRepo;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/post")
@@ -51,14 +56,18 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Post post, Principal principal) {
+    public ResponseEntity create(@RequestBody PostPutRequest request, Principal principal) {
 
         String name = principal.getName();
 
         User user = userRepo.findByUsername(name).orElseThrow(() ->
                 new UsernameNotFoundException("User not found with username or email: " + name));
 
+        Post post = new Post(request.getTag(), request.getText());
+
         post.setAuthor(user);
+
+        post.getShareUsers().addAll(identifyUser(request));
 
         postRepo.save(post);
 
@@ -74,7 +83,8 @@ public class PostController {
         if (postFromDB != null) {
             postFromDB.setTag(request.getTag());
             postFromDB.setText(request.getText());
-
+            postFromDB.getShareUsers().clear();
+            postFromDB.getShareUsers().addAll(identifyUser(request));
             postRepo.save(postFromDB);
 
             return ResponseEntity.ok(new ApiResponse(true, "Post updated successfully"));
@@ -93,4 +103,23 @@ public class PostController {
         } else return new ResponseEntity<>(new ApiResponse(false, "This post doesn't exist"),
                 HttpStatus.BAD_REQUEST);
     }
+
+    private Set<User> identifyUser(PostPutRequest request) {
+
+        Set<User> users = new HashSet<>();
+
+        for (Integer n: request.getUsernameIds()) {
+            users.add(userRepo.findById(n).orElseThrow(
+                    () -> new AppException("No user with id: " + n)));
+        }
+        return users;
+    }
+
+    @ApiOperation(value = "returns list of posts from Users which add my id to the Share list")
+    @GetMapping("/{id}/share")
+    public List<Post> sharePost(@PathVariable Integer id) {
+
+        return postRepo.listOfPostsSharedWithMe(id);
+    }
+
 }

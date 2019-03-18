@@ -11,7 +11,11 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<User, Integer> {
 
+    Optional<User> findById(Integer id);
+
     Optional<User> findByUsername(String username);
+
+    Boolean existsByUsername(String username);
 
     @Query(value = "select * from usr " +
             "inner join user_role on usr.id = user_role.user_id " +
@@ -19,11 +23,13 @@ public interface UserRepo extends JpaRepository<User, Integer> {
             "where role.id = ?1", nativeQuery = true)
     List<User> findUserWithRole(Integer role);
 
+
     @Query(value = "select count(username) from usr " +
             "inner join user_role on usr.id = user_role.user_id " +
             "inner join role on user_role.role_id = role.id " +
             "where role.id =?1", nativeQuery = true)
     Integer countOfRoles(Integer roleId);
+
 
     @Query(value = "select count(username) from usr " +
             "inner join user_role on usr.id = user_role.user_id " +
@@ -31,5 +37,12 @@ public interface UserRepo extends JpaRepository<User, Integer> {
             "where role.id = ?1 and usr.active = ?2", nativeQuery = true)
     Integer countOfRolesNonActive(Integer roleId, boolean s);
 
-    Boolean existsByUsername(String username);
+
+    @Query(value = "select usr.id, usr.username, usr.password, usr.active from role " +
+            "inner join user_role on role.id = user_role.role_id " +
+            "inner join usr on user_role.user_id = usr.id " +
+            "inner join user_subject on usr.id = user_subject.user_id " +
+            "inner join subject on user_subject.subject_id = subject.id " +
+            "where subject.id = ?1 and role.id = ?2", nativeQuery = true)
+    List<User> usersWhichTeachThisSubject(Integer subjectId, Integer roleId);
 }

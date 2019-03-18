@@ -1,6 +1,10 @@
 package com.example.crm2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Post {
@@ -16,7 +20,21 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User author;
 
+//    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+            name = "share",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> shareUsers = new HashSet<>();
+
     public Post() {
+    }
+
+    public Post(String tag, String text) {
+        this.tag = tag;
+        this.text = text;
     }
 
     public Post(String tag, String text, User user) {
@@ -55,5 +73,13 @@ public class Post {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Set<User> getShareUsers() {
+        return shareUsers;
+    }
+
+    public void setShareUsers(Set<User> shareUsers) {
+        this.shareUsers = shareUsers;
     }
 }

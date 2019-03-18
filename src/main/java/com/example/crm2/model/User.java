@@ -66,11 +66,12 @@ public class User {
         this.password = password;
     }
 
-    public User(Integer id, String username, String password, boolean active) {
+    public User(Integer id, String username, String password, boolean active, Set<Subject> subjects) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.active = active;
+        this.subjects = subjects;
     }
 
     public Integer getId() {

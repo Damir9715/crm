@@ -23,4 +23,10 @@ public interface PostRepo extends JpaRepository<Post, Integer> {
             "select distinct user_subscriptions.channel_id from usr, user_subscriptions \n" +
             "where user_subscriptions.subscriber_id = ?1))", nativeQuery = true)
     List<Post> listOfPostsOfUsersIFollow(Integer myId);
+
+    @Query(value = "select * from post " +
+            "inner join share on post.id = share.post_id " +
+            "inner join usr on share.user_id = usr.id " +
+            "where usr.id = ?1", nativeQuery = true)
+    List<Post> listOfPostsSharedWithMe(Integer myId);
 }

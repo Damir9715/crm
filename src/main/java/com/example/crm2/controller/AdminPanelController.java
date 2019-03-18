@@ -7,8 +7,10 @@ import com.example.crm2.dto.UpdateRequest;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.Role;
 import com.example.crm2.model.RoleName;
+import com.example.crm2.model.Subject;
 import com.example.crm2.model.User;
 import com.example.crm2.repo.RoleRepo;
+import com.example.crm2.repo.SubjectRepo;
 import com.example.crm2.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,9 @@ public class AdminPanelController {
 
     @Autowired
     RoleRepo roleRepo;
+
+    @Autowired
+    SubjectRepo subjectRepo;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -69,6 +74,13 @@ public class AdminPanelController {
         return userRepo.findUserWithRole(3);
     }
 
+    @GetMapping("/teacherSubject/{subject}")
+    public List<User> getTeacherSubject(@PathVariable Integer subject) {
+
+//        System.out.println(userRepo.usersWhichTeachThisSubject(subject, 2));
+        return userRepo.usersWhichTeachThisSubject(subject, 2);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity update(
             @PathVariable("id") User userFromDB,
@@ -81,6 +93,8 @@ public class AdminPanelController {
             userFromDB.setActive(request.isActive());
             userFromDB.getRoles().clear();
             userFromDB.getRoles().addAll(identifyRole(request));
+            userFromDB.getSubjects().clear();
+            userFromDB.getSubjects().addAll(identifySubject(request));
 
             userRepo.save(userFromDB);
 
@@ -109,5 +123,15 @@ public class AdminPanelController {
             userRole.add(roleRepo.findByName(role).orElseThrow(() -> new AppException("Fail Role")));
         }
         return userRole;
+    }
+
+    private Set<Subject> identifySubject(RegistrationRequest request) {
+
+        Set<Subject> subjects = new HashSet<>();
+
+        for (String s: request.getSubject()) {
+            subjects.add(subjectRepo.findByName(s).orElseThrow(() -> new AppException("Fail Subject")));
+        }
+        return subjects;
     }
 }
