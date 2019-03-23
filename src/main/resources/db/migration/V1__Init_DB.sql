@@ -66,9 +66,6 @@ alter table if exists user_subscriptions
     foreign key (subscriber_id) references usr;
 
 
-insert into role(id, name)
-values (1, 'ADMIN');
-insert into role(id, name)
-values (2, 'TEACHER');
-insert into role(id, name)
-values (3, 'STUDENT');
+insert into role(id, name) values (1, 'ADMIN');
+insert into role(id, name) values (2, 'TEACHER');
+insert into role(id, name) values (3, 'STUDENT');

@@ -1,6 +1,6 @@
 package com.example.crm2.security;
 
-import com.example.crm2.model.User;
+import com.example.crm2.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

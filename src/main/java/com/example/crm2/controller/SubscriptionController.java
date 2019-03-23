@@ -2,7 +2,7 @@ package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
 import com.example.crm2.model.Post;
-import com.example.crm2.model.User;
+import com.example.crm2.model.user.User;
 import com.example.crm2.repo.PostRepo;
 import com.example.crm2.repo.UserRepo;
 import io.swagger.annotations.ApiOperation;

@@ -1,6 +1,6 @@
 package com.example.crm2.security;
 
-import com.example.crm2.model.User;
+import com.example.crm2.model.user.User;
 import com.example.crm2.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-//no @Repository how spring see it like a bean
 @Repository
 public interface PostRepo extends JpaRepository<Post, Integer> {
 

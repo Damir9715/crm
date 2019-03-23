@@ -1,5 +1,9 @@
-package com.example.crm2.model;
+package com.example.crm2.model.user;
 
+import com.example.crm2.model.Post;
+import com.example.crm2.model.timetable.Group;
+import com.example.crm2.model.timetable.Schedule;
+import com.example.crm2.model.timetable.Subject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -9,6 +13,7 @@ import java.util.Set;
 @Entity
 @Table(name = "usr")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)  //auto: id doesn't have default value in mysql
     private Integer id;
@@ -19,7 +24,18 @@ public class User {
 
     private boolean active;
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_group",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "group_id")
+    )
+    private Set<Group> groups = new HashSet<>();
+
     @JsonIgnore
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    private Set<Schedule> schedules;
+
     @ManyToMany/*(fetch = FetchType.LAZY)*/
     @JoinTable(
             name = "user_role",
@@ -66,12 +82,28 @@ public class User {
         this.password = password;
     }
 
-    public User(Integer id, String username, String password, boolean active, Set<Subject> subjects) {
-        this.id = id;
+    public User(
+            String username,
+            String password,
+            boolean active,
+            Set<Group> groups,
+            Set<Schedule> schedules,
+            Set<Role> roles,
+            Set<Subject> subjects,
+            Set<Post> posts,
+            Set<User> subscribers,
+            Set<User> subscriptions
+    ) {
         this.username = username;
         this.password = password;
         this.active = active;
+        this.groups = groups;
+        this.schedules = schedules;
+        this.roles = roles;
         this.subjects = subjects;
+        this.posts = posts;
+        this.subscribers = subscribers;
+        this.subscriptions = subscriptions;
     }
 
     public Integer getId() {
@@ -136,6 +168,22 @@ public class User {
 
     public void setSubscriptions(Set<User> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public Set<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(Set<Group> groups) {
+        this.groups = groups;
+    }
+
+    public Set<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(Set<Schedule> schedules) {
+        this.schedules = schedules;
     }
 
     public Set<Subject> getSubjects() {

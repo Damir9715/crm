@@ -1,20 +1,23 @@
-package com.example.crm2.model;
+package com.example.crm2.model.user;
+
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
 @Entity
-public class Subject {
-
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String name;
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    private RoleName name;
 
-    public Subject() {
+    public Role() {
     }
 
-    public Subject(String name) {
+    public Role(RoleName name) {
         this.name = name;
     }
 
@@ -26,11 +29,11 @@ public class Subject {
         this.id = id;
     }
 
-    public String getName() {
+    public RoleName getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(RoleName name) {
         this.name = name;
     }
 }

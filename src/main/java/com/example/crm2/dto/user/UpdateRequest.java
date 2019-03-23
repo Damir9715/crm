@@ -1,7 +1,6 @@
-package com.example.crm2.dto;
+package com.example.crm2.dto.user;
 
-
-public class UpdateRequest extends RegistrationRequest{
+public class UpdateRequest extends RegistrationRequest {
 
     private boolean active;
 
