@@ -1,16 +1,12 @@
 package com.example.crm2.dto.user;
 
-import com.example.crm2.model.user.RoleName;
-
 import java.util.Set;
 
-public class RegistrationRequest {
+public class UserRequest {
 
     private String username;
     private String password;
-    private Set<RoleName> role;
     private Set<String> subjects;
-    private Set<String> group;
 
     public String getUsername() {
         return username;
@@ -28,14 +24,6 @@ public class RegistrationRequest {
         this.password = password;
     }
 
-    public Set<RoleName> getRole() {
-        return role;
-    }
-
-    public void setRole(Set<RoleName> role) {
-        this.role = role;
-    }
-
     public Set<String> getSubjects() {
         return subjects;
     }
@@ -43,13 +31,4 @@ public class RegistrationRequest {
     public void setSubjects(Set<String> subjects) {
         this.subjects = subjects;
     }
-
-    public Set<String> getGroup() {
-        return group;
-    }
-
-    public void setGroup(Set<String> group) {
-        this.group = group;
-    }
 }
-

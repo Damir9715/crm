@@ -8,7 +8,6 @@ public class ScheduleRequest {
     private Integer subjectId;
     private Integer userId;
     private Integer timeId;
-    private Integer groupId;
 
     public String getScheduleName() {
         return scheduleName;
@@ -56,13 +55,5 @@ public class ScheduleRequest {
 
     public void setTimeId(Integer timeId) {
         this.timeId = timeId;
-    }
-
-    public Integer getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
     }
 }

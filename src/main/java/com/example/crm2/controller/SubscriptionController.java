@@ -73,6 +73,19 @@ public class SubscriptionController {
         }
     }
 
+    @GetMapping("subscribe/{studentId}/{teacherId}")
+    public ResponseEntity subscribeStudentToTeacher(
+            @PathVariable User studentId,
+            @PathVariable User teacherId
+    ) {
+
+        if (sub(studentId, teacherId)) {
+            return ResponseEntity.ok(new ApiResponse(true, "Successfully subscribed"));
+        } else {
+            return ResponseEntity.ok(new ApiResponse(false, "This user already subscribed"));
+        }
+    }
+
     @GetMapping("unsubscribe/{user}")
     public ResponseEntity unsubscribe(
             Principal principal,
@@ -85,6 +98,19 @@ public class SubscriptionController {
                 new UsernameNotFoundException("User not found with username or email: " + name));
 
         if (unsub(currentUser, user)) {
+            return ResponseEntity.ok(new ApiResponse(true, "Successfully unsubscribed"));
+        } else {
+            return ResponseEntity.ok(new ApiResponse(false, "This user already unsubscribed"));
+        }
+    }
+
+    @GetMapping("unsubscribe/{studentId}/{teacherId}")
+    public ResponseEntity unsubscribeStudentToTeacher(
+            @PathVariable User studentId,
+            @PathVariable User teacherId
+    ) {
+
+        if (unsub(studentId, teacherId)) {
             return ResponseEntity.ok(new ApiResponse(true, "Successfully unsubscribed"));
         } else {
             return ResponseEntity.ok(new ApiResponse(false, "This user already unsubscribed"));

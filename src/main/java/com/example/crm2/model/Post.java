@@ -3,6 +3,8 @@ package com.example.crm2.model;
 import com.example.crm2.model.user.User;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Post {
@@ -18,13 +20,13 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User author;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "share",
-//            joinColumns = @JoinColumn(name = "post_id"),
-//            inverseJoinColumns = @JoinColumn(name = "user_id")
-//    )
-//    private Set<User> shareUsers = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "share",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> shareUsers = new HashSet<>();
 
     public Post() {
     }
@@ -72,11 +74,11 @@ public class Post {
         this.author = author;
     }
 
-//    public Set<User> getShareUsers() {
-//        return shareUsers;
-//    }
-//
-//    public void setShareUsers(Set<User> shareUsers) {
-//        this.shareUsers = shareUsers;
-//    }
+    public Set<User> getShareUsers() {
+        return shareUsers;
+    }
+
+    public void setShareUsers(Set<User> shareUsers) {
+        this.shareUsers = shareUsers;
+    }
 }

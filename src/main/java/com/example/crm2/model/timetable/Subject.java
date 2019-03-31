@@ -1,5 +1,7 @@
 package com.example.crm2.model.timetable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ public class Subject {
 
     private String subjectName;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
     private Set<Schedule> schedules;
 

@@ -69,3 +69,33 @@ alter table if exists user_subscriptions
 insert into role(id, name) values (1, 'ADMIN');
 insert into role(id, name) values (2, 'TEACHER');
 insert into role(id, name) values (3, 'STUDENT');
+
+insert into day(id, day_name) values(1, 'Monday');
+insert into day(id, day_name) values(2, 'Tuesday');
+insert into day(id, day_name) values(3, 'Wednesday');
+insert into day(id, day_name) values(4, 'Thursday');
+insert into day(id, day_name) values(5, 'Friday');
+
+insert into time(id, time_name) values(1, '13-14');
+insert into time(id, time_name) values(2, '14-15');
+insert into time(id, time_name) values(3, '15-16');
+insert into time(id, time_name) values(4, '16-17');
+insert into time(id, time_name) values(5, '17-18');
+insert into time(id, time_name) values(6, '18-19');
+
+insert into room(id, room_name) values(1, '601');
+insert into room(id, room_name) values(2, '604');
+insert into room(id, room_name) values(3, '610');
+insert into room(id, room_name) values(4, '802');
+insert into room(id, room_name) values(5, '501');
+
+insert into subject(id, subject_name) values(1, 'Database');
+insert into subject(id, subject_name) values(2, 'CSA');
+insert into subject(id, subject_name) values(3, 'Web');
+insert into subject(id, subject_name) values(4, 'Java');
+
+-- insert into grp(id, group_name) values(1, 'is04');
+-- insert into grp(id, group_name) values(2, 'is03');
+-- insert into grp(id, group_name) values(3, 'is02');
+
+insert into schedule(id, schedule_name, day_id, room_id, subject_id, user_id, time_id, group_id) values(1, 'm1', 1, 1, 1, 1, 1, 1);

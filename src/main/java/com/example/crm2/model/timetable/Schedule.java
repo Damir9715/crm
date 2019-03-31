@@ -19,10 +19,6 @@ public class Schedule {
     private User teacher;
 
     @ManyToOne
-    @JoinColumn(name = "group_id")
-    private Group group;
-
-    @ManyToOne
     @JoinColumn(name = "subject_id")
     private Subject subject;
 
@@ -44,7 +40,6 @@ public class Schedule {
     public Schedule(
             String scheduleName,
             User teacher,
-            Group group,
             Subject subject,
             Room room,
             Day day,
@@ -52,7 +47,6 @@ public class Schedule {
     ) {
         this.scheduleName = scheduleName;
         this.teacher = teacher;
-        this.group = group;
         this.subject = subject;
         this.room = room;
         this.day = day;
@@ -113,13 +107,5 @@ public class Schedule {
 
     public void setTime(Time time) {
         this.time = time;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
     }
 }

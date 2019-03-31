@@ -1,7 +1,6 @@
 package com.example.crm2.model.user;
 
 import com.example.crm2.model.Post;
-import com.example.crm2.model.timetable.Group;
 import com.example.crm2.model.timetable.Schedule;
 import com.example.crm2.model.timetable.Subject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -23,14 +22,6 @@ public class User {
     private String password;
 
     private boolean active;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_group",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id")
-    )
-    private Set<Group> groups = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
@@ -86,7 +77,6 @@ public class User {
             String username,
             String password,
             boolean active,
-            Set<Group> groups,
             Set<Schedule> schedules,
             Set<Role> roles,
             Set<Subject> subjects,
@@ -97,7 +87,6 @@ public class User {
         this.username = username;
         this.password = password;
         this.active = active;
-        this.groups = groups;
         this.schedules = schedules;
         this.roles = roles;
         this.subjects = subjects;
@@ -168,14 +157,6 @@ public class User {
 
     public void setSubscriptions(Set<User> subscriptions) {
         this.subscriptions = subscriptions;
-    }
-
-    public Set<Group> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(Set<Group> groups) {
-        this.groups = groups;
     }
 
     public Set<Schedule> getSchedules() {

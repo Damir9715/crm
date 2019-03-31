@@ -67,7 +67,7 @@ public class PostController {
 
         post.setAuthor(user);
 
-//        post.getShareUsers().addAll(identifyUser(request));
+        post.getShareUsers().addAll(identifyUser(request));
 
         postRepo.save(post);
 
@@ -83,8 +83,8 @@ public class PostController {
         if (postFromDB != null) {
             postFromDB.setTag(request.getTag());
             postFromDB.setText(request.getText());
-//            postFromDB.getShareUsers().clear();
-//            postFromDB.getShareUsers().addAll(identifyUser(request));
+            postFromDB.getShareUsers().clear();
+            postFromDB.getShareUsers().addAll(identifyUser(request));
             postRepo.save(postFromDB);
 
             return ResponseEntity.ok(new ApiResponse(true, "Post updated successfully"));

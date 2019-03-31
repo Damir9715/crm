@@ -1,14 +1,14 @@
 package com.example.crm2.controller;
 
-import com.example.crm2.dto.*;
-import com.example.crm2.dto.user.*;
+import com.example.crm2.dto.ApiResponse;
+import com.example.crm2.dto.CountDescription;
+import com.example.crm2.dto.JwtAuthenticationResponse;
+import com.example.crm2.dto.user.LoginRequest;
+import com.example.crm2.dto.user.AdminRequest;
+import com.example.crm2.dto.user.AdminUpdate;
 import com.example.crm2.exception.AppException;
-import com.example.crm2.model.timetable.Group;
-import com.example.crm2.model.timetable.Subject;
-import com.example.crm2.model.user.Role;
 import com.example.crm2.model.user.RoleName;
 import com.example.crm2.model.user.User;
-import com.example.crm2.repo.GroupRepo;
 import com.example.crm2.repo.RoleRepo;
 import com.example.crm2.repo.SubjectRepo;
 import com.example.crm2.repo.UserRepo;
@@ -23,7 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -34,9 +35,6 @@ public class UserController {
 
     @Autowired
     RoleRepo roleRepo;
-
-    @Autowired
-    GroupRepo groupRepo;
 
     @Autowired
     SubjectRepo subjectRepo;
@@ -85,16 +83,17 @@ public class UserController {
 //    }
 
     @PostMapping("/registration")
-    public ResponseEntity registration(@RequestBody RegistrationRequest request) {
+    public ResponseEntity registration(@RequestBody AdminRequest request) {
 
         if (userRepo.existsByUsername(request.getUsername())) {
             return new ResponseEntity<>(new ApiResponse(false, "This username already exists"),
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()));
+        User user = new User(request.getUsername().toLowerCase(), passwordEncoder.encode(request.getPassword()));
 
-        user.getRoles().addAll(identifyRole(request));
+        user.getRoles().add(roleRepo.findByName(RoleName.ADMIN).orElseThrow(() ->
+                new AppException("no such Role")));
         user.setActive(true);
 
         userRepo.save(user);
@@ -107,7 +106,7 @@ public class UserController {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsername(),
+                        loginRequest.getUsername().toLowerCase(),
                         loginRequest.getPassword()
                 )
         );
@@ -123,18 +122,13 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity update(
             @PathVariable("id") User userFromDB,
-            @RequestBody UpdateRequest request
+            @RequestBody AdminUpdate request
     ) {
 
         if (userFromDB != null) {
-            userFromDB.setUsername(request.getUsername());
+            userFromDB.setUsername(request.getUsername().toLowerCase());
             userFromDB.setPassword(passwordEncoder.encode(request.getPassword()));
             userFromDB.setActive(request.isActive());
-            userFromDB.getRoles().clear();
-            userFromDB.getRoles().addAll(identifyRole(request));
-
-            userFromDB.getGroups().addAll(identifyGroup(request));
-            userFromDB.getSubjects().addAll(identifySubject(request));
 
             userRepo.save(userFromDB);
 
@@ -153,35 +147,5 @@ public class UserController {
             return ResponseEntity.ok(new ApiResponse(true, "User deleted successfully"));
         } else return new ResponseEntity<>(new ApiResponse(false, "This user doesn't exist"),
                 HttpStatus.BAD_REQUEST);
-    }
-
-    private Set<Role> identifyRole(RegistrationRequest request) {
-
-        Set<Role> userRole = new HashSet<>();
-
-        for (RoleName role: request.getRole()) {
-            userRole.add(roleRepo.findByName(role).orElseThrow(() -> new AppException("role not exist")));
-        }
-        return userRole;
-    }
-
-    private Set<Subject> identifySubject(UpdateRequest request) {
-
-        Set<Subject> subjects = new HashSet<>();
-
-        for (String s: request.getSubjects()) {
-            subjects.add(subjectRepo.findBySubjectName(s).orElseThrow(() -> new AppException("no such Subject")));
-        }
-        return subjects;
-    }
-
-    private Set<Group> identifyGroup(UpdateRequest request) {
-
-        Set<Group> groups = new HashSet<>();
-
-        for (String s: request.getGroup()) {
-            groups.add(groupRepo.findByGroupName(s).orElseThrow(() -> new AppException("no such Subject")));
-        }
-        return groups;
     }
 }
