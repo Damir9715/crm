@@ -88,7 +88,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             "/teacher/registration/**",
 
-            "/subject/**",
-            "/schedule/**"
+            "/subject/**"
     };
 }

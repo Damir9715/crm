@@ -1,6 +1,6 @@
 package com.example.crm2.dto.user;
 
-public class UserUpdate extends UserRequest {
+public class StudentUpdate extends StudentRequest {
 
     private boolean active;
 

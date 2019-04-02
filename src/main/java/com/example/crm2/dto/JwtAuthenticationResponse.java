@@ -2,15 +2,25 @@ package com.example.crm2.dto;
 
 public class JwtAuthenticationResponse {
 
+    private Integer id;
     private String accessToken;
     private String tokenType = "Bearer";
     private String role;
     private String username;
 
-    public JwtAuthenticationResponse(String accessToken, String role, String username) {
+    public JwtAuthenticationResponse(Integer id, String accessToken, String role, String username) {
+        this.id = id;
         this.accessToken = accessToken;
         this.role = role;
         this.username = username;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getAccessToken() {

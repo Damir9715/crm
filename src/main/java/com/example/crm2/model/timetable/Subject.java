@@ -1,8 +1,9 @@
 package com.example.crm2.model.timetable;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.crm2.model.user.User;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,9 +15,13 @@ public class Subject {
 
     private String subjectName;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "subject", cascade = CascadeType.ALL)
-    private Set<Schedule> schedules;
+    @ManyToMany
+    @JoinTable(
+            name = "subject_user",
+            joinColumns = @JoinColumn(name = "subject_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> teachers = new HashSet<>();
 
     public Subject() {
     }
@@ -39,5 +44,13 @@ public class Subject {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public Set<User> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(Set<User> teachers) {
+        this.teachers = teachers;
     }
 }

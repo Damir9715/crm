@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>crm2</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>crm2</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -39,12 +39,6 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<optional>true</optional>
 		</dependency>
-
-		<!--<dependency>-->
-			<!--<groupId>mysql</groupId>-->
-			<!--<artifactId>mysql-connector-java</artifactId>-->
-			<!--<scope>runtime</scope>-->
-		<!--</dependency>-->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -91,11 +85,10 @@
 			<version>2.9.2</version>
 		</dependency>
 
-
-		<!--<dependency>-->
-			<!--<groupId>org.flywaydb</groupId>-->
-			<!--<artifactId>flyway-core</artifactId>-->
-		<!--</dependency>-->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
 
 		<!-- JAXB -->
 		<dependency>
@@ -122,11 +115,11 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 
-			<!--<plugin>-->
-				<!--<groupId>org.flywaydb</groupId>-->
-				<!--<artifactId>flyway-maven-plugin</artifactId>-->
-				<!--<version>5.2.4</version>-->
-			<!--</plugin>-->
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>5.2.4</version>
+			</plugin>
 		</plugins>
 	</build>
 

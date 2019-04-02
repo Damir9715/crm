@@ -4,6 +4,8 @@ package com.example.crm2.model.timetable;
 import com.example.crm2.model.user.User;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Schedule {
@@ -12,45 +14,34 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String scheduleName;
+    private String description;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User teacher;
+    private User author;
 
-    @ManyToOne
-    @JoinColumn(name = "subject_id")
-    private Subject subject;
+    private String room;
+    private String day;
+    private String time;
 
-    @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
-
-    @ManyToOne
-    @JoinColumn(name = "day_id")
-    private Day day;
-
-    @ManyToOne
-    @JoinColumn(name = "time_id")
-    private Time time;
+    @ManyToMany
+    @JoinTable(
+            name = "shareSchedule",
+            joinColumns = @JoinColumn(name = "schedule_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> shareUsers = new HashSet<>();
 
     public Schedule() {
     }
 
-    public Schedule(
-            String scheduleName,
-            User teacher,
-            Subject subject,
-            Room room,
-            Day day,
-            Time time
-    ) {
-        this.scheduleName = scheduleName;
-        this.teacher = teacher;
-        this.subject = subject;
+    public Schedule(String description, User author, String room, String day, String time, Set<User> shareUsers) {
+        this.description = description;
+        this.author = author;
         this.room = room;
         this.day = day;
         this.time = time;
+        this.shareUsers = shareUsers;
     }
 
     public Integer getId() {
@@ -61,51 +52,51 @@ public class Schedule {
         this.id = id;
     }
 
-    public String getScheduleName() {
-        return scheduleName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setScheduleName(String scheduleName) {
-        this.scheduleName = scheduleName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public User getTeacher() {
-        return teacher;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setTeacher(User teacher) {
-        this.teacher = teacher;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
-    public Subject getSubject() {
-        return subject;
-    }
-
-    public void setSubject(Subject subject) {
-        this.subject = subject;
-    }
-
-    public Room getRoom() {
+    public String getRoom() {
         return room;
     }
 
-    public void setRoom(Room room) {
+    public void setRoom(String room) {
         this.room = room;
     }
 
-    public Day getDay() {
+    public String getDay() {
         return day;
     }
 
-    public void setDay(Day day) {
+    public void setDay(String day) {
         this.day = day;
     }
 
-    public Time getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(String time) {
         this.time = time;
+    }
+
+    public Set<User> getShareUsers() {
+        return shareUsers;
+    }
+
+    public void setShareUsers(Set<User> shareUsers) {
+        this.shareUsers = shareUsers;
     }
 }

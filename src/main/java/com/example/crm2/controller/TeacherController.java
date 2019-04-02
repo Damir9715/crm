@@ -1,8 +1,8 @@
 package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
-import com.example.crm2.dto.user.UserRequest;
-import com.example.crm2.dto.user.UserUpdate;
+import com.example.crm2.dto.user.TeacherRequest;
+import com.example.crm2.dto.user.TeacherUpdate;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.timetable.Subject;
 import com.example.crm2.model.user.RoleName;
@@ -57,7 +57,7 @@ public class TeacherController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity create(@RequestBody UserRequest request) {
+    public ResponseEntity create(@RequestBody TeacherRequest request) {
 
         if (userRepo.existsByUsername(request.getUsername())) {
             return new ResponseEntity<>(new ApiResponse(false, "This username already exists"),
@@ -70,20 +70,34 @@ public class TeacherController {
                 new AppException("no such Role")));
 
         user.getSubjects().addAll(identifySubject(request));
+
+//        user.setSubjects(Collections.singleton(subjectRepo.findBySubjectName(request.getSubjects()).orElseThrow(() -> new AppException("no such Subject"))));
+
         user.setActive(true);
 
         userRepo.save(user);
+
+        Subject subjectFromDB = subjectRepo.findBySubjectName(request.getSubjects().iterator().next()).orElseThrow(() ->
+                new AppException("no such Subject"));
+        if (subjectFromDB != null) {
+            subjectFromDB.getTeachers().add(userRepo.findByUsername(request.getUsername()).orElseThrow(() ->
+                    new AppException("no such User")));
+        }
+
+        subjectRepo.save(subjectFromDB);
 
         return ResponseEntity.ok(new ApiResponse(true, "Teacher registered successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable("id") User userFromDB, @RequestBody UserUpdate request) {
+    public ResponseEntity update(@PathVariable("id") User userFromDB, @RequestBody TeacherUpdate request) {
 
         if (userFromDB != null) {
             userFromDB.setUsername(request.getUsername().toLowerCase());
             userFromDB.setPassword(passwordEncoder.encode(request.getPassword()));
             userFromDB.getSubjects().clear();
+//            userFromDB.getSubjects().add(subjectRepo.findBySubjectName(request.getSubjects()).orElseThrow(() ->
+//                    new AppException("no such Subject")));
             userFromDB.getSubjects().addAll(identifySubject(request));
             userFromDB.setActive(request.isActive());
 
@@ -96,7 +110,7 @@ public class TeacherController {
         }
     }
 
-    private Set<Subject> identifySubject(UserRequest request) {
+    private Set<Subject> identifySubject(TeacherRequest request) {
 
         Set<Subject> subjects = new HashSet<>();
 

@@ -1,8 +1,8 @@
 package com.example.crm2.controller;
 
 import com.example.crm2.dto.ApiResponse;
-import com.example.crm2.dto.user.UserRequest;
-import com.example.crm2.dto.user.UserUpdate;
+import com.example.crm2.dto.user.StudentRequest;
+import com.example.crm2.dto.user.StudentUpdate;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.timetable.Subject;
 import com.example.crm2.model.user.RoleName;
@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,20 @@ public class StudentController {
     @Autowired
     AuthenticationManager authenticationManager;
 
+    public boolean sub(User currentUser, User user) {
+
+        if (user != null) {
+            if (user.getSubscribers().contains(currentUser)) {
+                return false;
+            } else {
+                user.getSubscribers().add(currentUser);
+                userRepo.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @GetMapping
     public Iterable<User> getStudents() {
 
@@ -51,7 +66,7 @@ public class StudentController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity create(@RequestBody UserRequest request) {
+    public ResponseEntity create(@RequestBody StudentRequest request) {
 
         if (userRepo.existsByUsername(request.getUsername())) {
             return new ResponseEntity<>(new ApiResponse(false, "This username already exists"),
@@ -63,21 +78,39 @@ public class StudentController {
         user.getRoles().add(roleRepo.findByName(RoleName.STUDENT).orElseThrow(() ->
                 new AppException("no such Role")));
 
-        user.getSubjects().addAll(identifySubject(request));
+//        user.getSubjects().addAll(identifySubject(request));
+
+        user.setSubjects(Collections.singleton(subjectRepo.findBySubjectName(request.getSubjects().iterator().next()).orElseThrow(() ->
+                new AppException("no such Subject"))));
+
         user.setActive(true);
 
         userRepo.save(user);
 
-        return ResponseEntity.ok(new ApiResponse(true, "Student registered successfully"));
+
+        User userStudent = userRepo.findByUsername(request.getUsername()).orElseThrow(() ->
+                new AppException("no such User"));
+
+        User userTeacher = userRepo.findByUsername(request.getTeachers()).orElseThrow(() ->
+                new AppException("no such User"));
+
+        if (sub(userStudent, userTeacher)) {
+            return ResponseEntity.ok(new ApiResponse(true, "Successfully registered and subscribed"));
+        } else {
+            return ResponseEntity.ok(new ApiResponse(false, "registered but not subscribed"));
+        }
+//        return ResponseEntity.ok(new ApiResponse(true, "Student registered successfully"));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable("id") User userFromDB, @RequestBody UserUpdate request) {
+    public ResponseEntity update(@PathVariable("id") User userFromDB, @RequestBody StudentUpdate request) {
 
         if (userFromDB != null) {
             userFromDB.setUsername(request.getUsername().toLowerCase());
             userFromDB.setPassword(passwordEncoder.encode(request.getPassword()));
             userFromDB.getSubjects().clear();
+//            userFromDB.getSubjects().add(subjectRepo.findBySubjectName(request.getSubjects()).orElseThrow(() ->
+//                    new AppException("no such Subject")));
             userFromDB.getSubjects().addAll(identifySubject(request));
             userFromDB.setActive(request.isActive());
 
@@ -90,7 +123,7 @@ public class StudentController {
         }
     }
 
-    private Set<Subject> identifySubject(UserRequest request) {
+    private Set<Subject> identifySubject(StudentRequest request) {
 
         Set<Subject> subjects = new HashSet<>();
 

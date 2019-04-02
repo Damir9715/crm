@@ -24,7 +24,7 @@ public class User {
     private boolean active;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private Set<Schedule> schedules;
 
     @ManyToMany/*(fetch = FetchType.LAZY)*/
@@ -35,6 +35,7 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_subject",

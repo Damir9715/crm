@@ -6,6 +6,7 @@ import com.example.crm2.dto.JwtAuthenticationResponse;
 import com.example.crm2.dto.user.LoginRequest;
 import com.example.crm2.dto.user.AdminRequest;
 import com.example.crm2.dto.user.AdminUpdate;
+import com.example.crm2.dto.user.UserResponse;
 import com.example.crm2.exception.AppException;
 import com.example.crm2.model.user.RoleName;
 import com.example.crm2.model.user.User;
@@ -57,10 +58,17 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getUser(@PathVariable Integer id) {
+    public UserResponse getUser(@PathVariable Integer id) {
 
         User user = userRepo.findById(id).orElseThrow(() -> new AppException("fail user with id: " + id));
-        return user;
+        UserResponse userResponse = new UserResponse();
+
+        userResponse.setUsername(user.getUsername());
+        userResponse.setPassword("");
+        userResponse.setActive(user.isActive());
+        userResponse.setSubjects(user.getSubjects());
+
+        return userResponse;
     }
 
     @GetMapping("/count")
@@ -75,12 +83,6 @@ public class UserController {
 
         return list;
     }
-
-//    @GetMapping("/teacherSubject/{subject}")
-//    public List<User> getTeacherSubject(@PathVariable Integer subject) {
-//
-//        return userRepo.usersWhichTeachThisSubject(subject, 2);
-//    }
 
     @PostMapping("/registration")
     public ResponseEntity registration(@RequestBody AdminRequest request) {
@@ -115,8 +117,11 @@ public class UserController {
 
         String jwt = tokenProvider.generateToken(authentication);
 
+        User user = userRepo.findByUsername(loginRequest.getUsername()).orElseThrow(() ->
+                new AppException("no such Username"));
+
         return ResponseEntity.ok(new JwtAuthenticationResponse(
-                jwt, authentication.getAuthorities().toString(), loginRequest.getUsername()));
+                user.getId(), jwt, authentication.getAuthorities().toString(), loginRequest.getUsername()));
     }
 
     @PutMapping("/{id}")

@@ -6,14 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ScheduleRepo extends JpaRepository<Schedule, Integer>{
 
-    @Query(value = "select * from schedule where subject_id=?1 and user_id=?2", nativeQuery = true)
-    List<Schedule> findBySubjectIdAndTeacherId(Integer n, Integer m);
+    Optional<Schedule> findAllByAuthor_Id(Integer id);
 
-
-    @Query(value = "select * from schedule where group_id=?1", nativeQuery = true)
-    List<Schedule> findByGroupId(Integer n);
+    @Query(value = "select * from schedule s " +
+            "inner join share_schedule sc on s.id = sc.schedule_id " +
+            "inner join usr u on sc.user_id = u.id " +
+            "where u.id = ?1", nativeQuery = true)
+    List<Schedule> listOfScheduleSharedWithMe(Integer myId);
 }

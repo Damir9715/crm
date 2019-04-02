@@ -33,24 +33,48 @@ public class PostController {
     @Autowired
     private PostRepo postRepo;
 
+//    @GetMapping
+//    public Iterable<Post> getPosts(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+//
+//        Page<Post> page = postRepo.findAll(pageable);
+//
+//        return page;
+//    }
+
     @GetMapping
-    public Iterable<Post> getPosts(
-            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+    public Iterable<Post> getPosts() {
 
-        Page<Post> page = postRepo.findAll(pageable);
+        List<Post> posts = postRepo.findAll();
 
-        return page;
+        return posts;
     }
 
     @GetMapping("/{id}")
-    public Page<Post> userPosts(
-            @PathVariable Integer id,
-            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
-    ) {
+    public Post getPost(@PathVariable Integer id) {
 
-        Page<Post> posts = postRepo.findAllByAuthor_Id(id, pageable).orElseThrow(() ->
-                new IllegalArgumentException("Posts with author id not found: " + id));
+        Post post = postRepo.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Post with id: " + id + " not found"));
+
+        return post;
+    }
+
+//    @GetMapping("/teacher/{id}")
+//    public Page<Post> userPosts(
+//            @PathVariable Integer id,
+//            @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable
+//    ) {
+//
+//        Page<Post> posts = postRepo.findAllByAuthor_Id(id, pageable).orElseThrow(() ->
+//                new IllegalArgumentException("Posts with author id: " + id + " not found"));
+//
+//        return posts;
+//    }
+
+    @GetMapping("/teacher/{id}")
+    public Iterable<Post> userPosts(@PathVariable Integer id) {
+
+        List<Post> posts = postRepo.findAllByAuthor_Id(id).orElseThrow(() ->
+                new IllegalArgumentException("Posts with author id: " + id + " not found"));
 
         return posts;
     }
@@ -104,17 +128,6 @@ public class PostController {
                 HttpStatus.BAD_REQUEST);
     }
 
-    private Set<User> identifyUser(PostPutRequest request) {
-
-        Set<User> users = new HashSet<>();
-
-        for (Integer n: request.getUsernameIds()) {
-            users.add(userRepo.findById(n).orElseThrow(
-                    () -> new AppException("No user with id: " + n)));
-        }
-        return users;
-    }
-
     @ApiOperation(value = "returns list of posts from Users which add my id to the Share list")
     @GetMapping("/{id}/share")
     public List<Post> sharePost(@PathVariable Integer id) {
@@ -122,4 +135,14 @@ public class PostController {
         return postRepo.listOfPostsSharedWithMe(id);
     }
 
+    private Set<User> identifyUser(PostPutRequest request) {
+
+        Set<User> users = new HashSet<>();
+
+        for (Integer n: request.getShareUsers()) {
+            users.add(userRepo.findById(n).orElseThrow(
+                    () -> new AppException("No user with id: " + n)));
+        }
+        return users;
+    }
 }

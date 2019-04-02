@@ -13,9 +13,10 @@ import java.util.Optional;
 @Repository
 public interface PostRepo extends JpaRepository<Post, Integer> {
 
-    Page<Post> findAll(Pageable pageable);
+//    Page<Post> findAll(Pageable pageable);
+//    Optional<Page<Post>> findAllByAuthor_Id(Integer id, Pageable pageable);
 
-    Optional<Page<Post>> findAllByAuthor_Id(Integer id, Pageable pageable);
+    Optional<List<Post>> findAllByAuthor_Id(Integer id);
 
     @Query(value = "select post.id, post.tag, post.text, post.user_id  from post where post.user_id in (" +
             "select usr.id from usr where usr.id in (" +

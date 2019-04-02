@@ -6,7 +6,7 @@ public class PostPutRequest {
 
     private String tag;
     private String text;
-    private Set<Integer> usernameIds;
+    private Set<Integer> shareUsers;
 
     public String getTag() {
         return tag;
@@ -24,11 +24,11 @@ public class PostPutRequest {
         this.text = text;
     }
 
-    public Set<Integer> getUsernameIds() {
-        return usernameIds;
+    public Set<Integer> getShareUsers() {
+        return shareUsers;
     }
 
-    public void setUsernameIds(Set<Integer> usernameIds) {
-        this.usernameIds = usernameIds;
+    public void setShareUsers(Set<Integer> shareUsers) {
+        this.shareUsers = shareUsers;
     }
 }
