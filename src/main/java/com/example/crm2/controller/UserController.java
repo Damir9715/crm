@@ -68,6 +68,11 @@ public class UserController {
         userResponse.setActive(user.isActive());
         userResponse.setSubjects(user.getSubjects());
 
+        userResponse.setFirstname(user.getFirstname());
+        userResponse.setSurname(user.getSurname());
+        userResponse.setPhone(user.getPhone());
+        userResponse.setAge(user.getAge());
+
         return userResponse;
     }
 
@@ -92,7 +97,14 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(request.getUsername().toLowerCase(), passwordEncoder.encode(request.getPassword()));
+        User user = new User(
+                request.getUsername().toLowerCase(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getFirstname(),
+                request.getSurname(),
+                request.getPhone(),
+                request.getAge()
+        );
 
         user.getRoles().add(roleRepo.findByName(RoleName.ADMIN).orElseThrow(() ->
                 new AppException("no such Role")));
@@ -134,6 +146,11 @@ public class UserController {
             userFromDB.setUsername(request.getUsername().toLowerCase());
             userFromDB.setPassword(passwordEncoder.encode(request.getPassword()));
             userFromDB.setActive(request.isActive());
+
+            userFromDB.setFirstname(request.getFirstname());
+            userFromDB.setSurname(request.getSurname());
+            userFromDB.setPhone(request.getPhone());
+            userFromDB.setAge(request.getAge());
 
             userRepo.save(userFromDB);
 

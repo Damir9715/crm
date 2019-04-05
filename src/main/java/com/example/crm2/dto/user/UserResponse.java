@@ -11,6 +11,11 @@ public class UserResponse {
     private String password;
     private boolean active;
 
+    private String firstname;
+    private String surname;
+    private String phone;
+    private Integer age;
+
     private Set<Subject> subjects = new HashSet<>();
 
     public String getUsername() {
@@ -43,5 +48,37 @@ public class UserResponse {
 
     public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }

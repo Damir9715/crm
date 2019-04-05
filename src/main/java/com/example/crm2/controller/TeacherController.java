@@ -64,7 +64,14 @@ public class TeacherController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(request.getUsername().toLowerCase(), passwordEncoder.encode(request.getPassword()));
+        User user = new User(
+                request.getUsername().toLowerCase(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getFirstname(),
+                request.getSurname(),
+                request.getPhone(),
+                request.getAge()
+        );
 
         user.getRoles().add(roleRepo.findByName(RoleName.TEACHER).orElseThrow(() ->
                 new AppException("no such Role")));
@@ -100,6 +107,11 @@ public class TeacherController {
 //                    new AppException("no such Subject")));
             userFromDB.getSubjects().addAll(identifySubject(request));
             userFromDB.setActive(request.isActive());
+
+            userFromDB.setFirstname(request.getFirstname());
+            userFromDB.setSurname(request.getSurname());
+            userFromDB.setPhone(request.getPhone());
+            userFromDB.setAge(request.getAge());
 
             userRepo.save(userFromDB);
 

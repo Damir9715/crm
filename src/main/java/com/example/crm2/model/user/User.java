@@ -18,6 +18,11 @@ public class User {
     private Integer id;
     private String username;
 
+    private String firstname;
+    private String surname;
+    private String phone;
+    private Integer age;
+
     @JsonIgnore
     private String password;
 
@@ -69,13 +74,28 @@ public class User {
     public User() {
     }
 
-    public User(String username, String password) {
+    public User(
+            String username,
+            String password,
+            String firstname,
+            String surname,
+            String phone,
+            Integer age
+    ) {
         this.username = username;
         this.password = password;
+        this.firstname = firstname;
+        this.surname = surname;
+        this.phone = phone;
+        this.age = age;
     }
 
     public User(
             String username,
+            String firstname,
+            String surname,
+            String phone,
+            Integer age,
             String password,
             boolean active,
             Set<Schedule> schedules,
@@ -86,6 +106,10 @@ public class User {
             Set<User> subscriptions
     ) {
         this.username = username;
+        this.firstname = firstname;
+        this.surname = surname;
+        this.phone = phone;
+        this.age = age;
         this.password = password;
         this.active = active;
         this.schedules = schedules;
@@ -174,5 +198,37 @@ public class User {
 
     public void setSubjects(Set<Subject> subjects) {
         this.subjects = subjects;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
     }
 }

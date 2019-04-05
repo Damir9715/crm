@@ -78,10 +78,14 @@ create table user_subscriptions
 
 create table usr
 (
-  id       int4    not null,
-  active   boolean not null,
-  password varchar(255),
-  username varchar(255),
+  id        int4    not null,
+  active    boolean not null,
+  password  varchar(255),
+  username  varchar(255),
+  firstname varchar(255),
+  surname   varchar(255),
+  phone     varchar(255),
+  age       int4,
   primary key (id)
 );
 
@@ -128,10 +132,14 @@ insert into role(id, name)
 values (3, 'STUDENT');
 
 insert into subject(id, subject_name)
-values (1, 'Database');
+values (1, 'C++');
 insert into subject(id, subject_name)
-values (2, 'CSA');
+values (2, 'Python');
 insert into subject(id, subject_name)
-values (3, 'Web');
+values (3, 'Photoshop');
 insert into subject(id, subject_name)
 values (4, 'Java');
+insert into subject(id, subject_name)
+values (5, 'AutoCAD');
+insert into subject(id, subject_name)
+values (6, '3DsMax');

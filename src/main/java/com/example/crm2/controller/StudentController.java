@@ -73,7 +73,14 @@ public class StudentController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(request.getUsername().toLowerCase(), passwordEncoder.encode(request.getPassword()));
+        User user = new User(
+                request.getUsername().toLowerCase(),
+                passwordEncoder.encode(request.getPassword()),
+                request.getFirstname(),
+                request.getSurname(),
+                request.getPhone(),
+                request.getAge()
+        );
 
         user.getRoles().add(roleRepo.findByName(RoleName.STUDENT).orElseThrow(() ->
                 new AppException("no such Role")));
@@ -89,10 +96,10 @@ public class StudentController {
 
 
         User userStudent = userRepo.findByUsername(request.getUsername()).orElseThrow(() ->
-                new AppException("no such User"));
+                new AppException("no such Student"));
 
         User userTeacher = userRepo.findByUsername(request.getTeachers()).orElseThrow(() ->
-                new AppException("no such User"));
+                new AppException("registered but not subscribed, no such Teacher"));
 
         if (sub(userStudent, userTeacher)) {
             return ResponseEntity.ok(new ApiResponse(true, "Successfully registered and subscribed"));
@@ -113,6 +120,11 @@ public class StudentController {
 //                    new AppException("no such Subject")));
             userFromDB.getSubjects().addAll(identifySubject(request));
             userFromDB.setActive(request.isActive());
+
+            userFromDB.setFirstname(request.getFirstname());
+            userFromDB.setSurname(request.getSurname());
+            userFromDB.setPhone(request.getPhone());
+            userFromDB.setAge(request.getAge());
 
             userRepo.save(userFromDB);
 
